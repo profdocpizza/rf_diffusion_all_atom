@@ -303,8 +303,11 @@ class Model:
         o.terminus_type[n_prot-1] = C_TERMINUS
 
         is_diffused_prot = ~torch.from_numpy(contig_map.inpaint_str)
+        is_seq_masked_prot = ~torch.from_numpy(contig_map.inpaint_seq)
         is_diffused_sm = torch.zeros(n_sm).bool()
+        is_seq_masked_sm = torch.zeros(n_sm).bool()
         is_diffused = torch.cat((is_diffused_prot, is_diffused_sm))
+        is_seq_masked = torch.cat((is_seq_masked_prot, is_seq_masked_sm))
         is_atom_str_shown = contig_map.atomize_indices2atomname
         # The motifs for atomization are double-counted.
         if is_atom_str_shown:
@@ -318,7 +321,7 @@ class Model:
         o.xyz[o.is_sm,:3] = sm_ca[...,None,:]
         o.xyz[o.is_sm] += chemical.INIT_CRDS
 
-        return o, is_diffused, is_diffused
+        return o, is_diffused, is_seq_masked
 
 
     def prepro(self, indep, t, is_diffused):
